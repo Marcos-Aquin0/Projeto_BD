@@ -13,8 +13,12 @@ DB_CONFIG = {
 }
 
 def get_db_connection():
-    conn = mariadb.connect(**DB_CONFIG)
-    return conn
+    try:
+        conn = mariadb.connect(**DB_CONFIG)
+        return conn
+    except mariadb.Error as e:
+        st.error(f"Erro ao conectar ao banco de dados: {e}")
+        return None
 
 st.title("Dados sobre desastres no Estado de São Paulo")
 st.subheader("Projeto de Banco de Dados 2024/2")
@@ -26,6 +30,8 @@ query = st.text_area("Digite sua consulta SQL", height=150)
 if st.button("Executar Comando SQL"):
     try:
         conn = get_db_connection()
+        if conn is None:
+            raise Exception("Falha na conexão com o banco de dados.")
         cursor = conn.cursor(dictionary=True)
         cursor.execute(query)
         
