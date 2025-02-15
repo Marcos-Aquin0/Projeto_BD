@@ -1,5 +1,5 @@
 import streamlit as st
-import mariadb
+import mysql.connector as mariadb
 import os
 
 DATABASE = "database.db"
