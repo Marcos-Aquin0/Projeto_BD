@@ -1,7 +1,0 @@
-# DB_CONFIG = {
-#     "host": "codd.unifesp.br",      # Mude para o IP do seu servidor, se necessário
-#     "port": 3306,             # Porta padrão do MariaDB
-#     "user": "alunobd",    # Seu usuário do banco
-#     "password": "alunobd",  # Sua senha do banco
-#     "database": "DesasTasso"   # Nome do banco de dados
-# }
