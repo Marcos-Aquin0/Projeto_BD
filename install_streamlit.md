@@ -1,26 +1,26 @@
-# Installing Streamlit with Conda
+# Instalando Streamlit com Conda
 
-To install Streamlit using Conda, follow these steps:
+Para instalar o Streamlit usando Conda, siga estes passos:
 
-1. **Create a new Conda environment (optional but recommended):**
+1. **Crie um novo ambiente Conda (opcional, mas recomendado):**
     ```sh
     conda create --name myenv python=3.8
     conda activate myenv
     ```
 
-2. **Install Streamlit:**
+2. **Instale o Streamlit:**
     ```sh
     conda install -c conda-forge streamlit
     ```
 
-3. **Verify the installation:**
+3. **Verifique a instalação:**
     ```sh
     streamlit hello
     ```
 
-This will open a new tab in your default web browser with the Streamlit hello world app.
+Isso abrirá uma nova aba no seu navegador web padrão com o aplicativo hello world do Streamlit.
 
-4. **Install MariaDb:**
+4. **Instale o MYSQL:**
     ```sh
     conda install mysql-connector-python
     ```
