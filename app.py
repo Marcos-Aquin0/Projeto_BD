@@ -9,7 +9,9 @@ DB_CONFIG = {
     "port": 3306,             # Porta padrão do MariaDB
     "user": "freedb_tassin",    # Seu usuário do banco
     "password": "CY$$E%wCDNv7PS#",  # Sua senha do banco
-    "database": "freedb_tassocaneladefogo"   # Nome do banco de dados
+    "database": "freedb_tassocaneladefogo",   # Nome do banco de dados
+     "ssl_ca": "/path/to/ca-cert.pem",  # Caminho para o certificado CA
+    "ssl_verify_cert": True  # Verificar o certificado
 }
 
 def get_db_connection():
