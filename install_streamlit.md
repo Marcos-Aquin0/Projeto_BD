@@ -22,6 +22,6 @@ This will open a new tab in your default web browser with the Streamlit hello wo
 
 4. **Install MariaDb:**
     ```sh
-    conda install mariadb
+    conda install mysql-connector-python
     ```
 

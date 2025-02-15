@@ -3,57 +3,36 @@ import mysql.connector as mariadb
 import os
 
 DATABASE = "database.db"
+
 DB_CONFIG = {
-    "host": "codd.unifesp.br",      # Mude para o IP do seu servidor, se necessário
+    "host": "sql.freedb.tech",      # Mude para o IP do seu servidor, se necessário
     "port": 3306,             # Porta padrão do MariaDB
-    "user": "alunobd",    # Seu usuário do banco
-    "password": "alunobd",  # Sua senha do banco
-    "database": "MarcosAquino"   # Nome do banco de dados
+    "user": "freedb_tassin",    # Seu usuário do banco
+    "password": "CY$$E%wCDNv7PS#",  # Sua senha do banco
+    "database": "freedb_tassocaneladefogo"   # Nome do banco de dados
 }
+
 def get_db_connection():
     conn = mariadb.connect(**DB_CONFIG)
-    conn.row_factory = mariadb.Row
     return conn
 
-def init_db():
-    """Inicializa o banco de dados com uma tabela de exemplo, se não existir."""
-    if not os.path.exists(DATABASE):
-        conn = get_db_connection()
-        cur = conn.cursor()
-        cur.execute('''
-            CREATE TABLE IF NOT EXISTS pessoas (
-                id INTEGER PRIMARY KEY AUTOINCREMENT,
-                nome TEXT NOT NULL,
-                idade INTEGER
-            );
-        ''')
-        # Inserindo dados de exemplo
-        cur.execute("INSERT INTO pessoas (nome, idade) VALUES ('Alice', 30)")
-        cur.execute("INSERT INTO pessoas (nome, idade) VALUES ('Bruno', 25)")
-        cur.execute("INSERT INTO pessoas (nome, idade) VALUES ('Carla', 28)")
-        conn.commit()
-        conn.close()
-
-# Inicializa o banco de dados
-init_db()
-
-st.title("Interface de Consulta SQL com Streamlit")
+st.title("Dados sobre desastres no Estado de São Paulo")
+st.subheader("Projeto de Banco de Dados 2024/2")
+st.write("É necessário estar conectado à internet da unifesp para acessar o banco de dados.")
 
 # Área para digitar a consulta SQL
 query = st.text_area("Digite sua consulta SQL", height=150)
 
-if st.button("Executar Consulta"):
+if st.button("Executar Comando SQL"):
     try:
         conn = get_db_connection()
-        cur = conn.cursor()
-        cur.execute(query)
+        cursor = conn.cursor(dictionary=True)
+        cursor.execute(query)
         
         # Se for uma consulta SELECT, exibe os resultados
         if query.strip().lower().startswith("select"):
-            results = cur.fetchall()
+            results = cursor.fetchall()
             if results:
-                # Obtém os nomes das colunas
-                columns = results[0].keys()
                 # Converte os resultados em uma lista de dicionários
                 data = [dict(row) for row in results]
                 st.write("### Resultados:")
@@ -62,7 +41,16 @@ if st.button("Executar Consulta"):
                 st.info("Nenhum resultado para exibir.")
         else:
             conn.commit()
-            st.success("Consulta executada com sucesso!")
+            if query.strip().lower().startswith("insert"):
+                st.success("Dados inseridos com sucesso!")
+            elif query.strip().lower().startswith("update"):
+                st.success("Dados atualizados com sucesso!")
+            elif query.strip().lower().startswith("delete"):
+                st.success("Dados deletados com sucesso!")
+            elif query.strip().lower().startswith("create"):
+                st.success("Tabela criada com sucesso!")
+            else:
+                st.success("Consulta executada com sucesso!")
         conn.close()
     except Exception as e:
-        st.error(f"Erro: {e}")
+        st.error(f"Ocorreu um erro: {e}")
