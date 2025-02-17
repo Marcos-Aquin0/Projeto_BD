@@ -1,73 +1,45 @@
 import streamlit as st
-import mysql.connector as mariadb
-import os
+from pymongo import MongoClient
 
-DATABASE = "database.db"
+# Configurações do MongoDB Atlas
+MONGO_URI = "mongodb+srv://marcosaquinoic:gGtPTFngmkeBtOKm@tassinbd.bi0zn.mongodb.net/?retryWrites=true&w=majority&appName=TassinBD"  # Substitua pela sua string de conexão
+DATABASE_NAME = "TassinBD"  # Substitua pelo nome do banco de dados
+COLLECTION_NAME = "projetobd"  # Substitua pelo nome da coleção
 
-# DB_CONFIG = {
-#     "host": "sql.freedb.tech",      # Mude para o IP do seu servidor, se necessário
-#     "port": 3306,             # Porta padrão do MariaDB
-#     "user": "freedb_tassin",    # Seu usuário do banco
-#     "password": "CY$$E%wCDNv7PS#",  # Sua senha do banco
-#     "database": "freedb_tassocaneladefogo",   # Nome do banco de dados
-#      "ssl_ca": "/path/to/ca-cert.pem",  # Caminho para o certificado CA
-#     "ssl_verify_cert": True  # Verificar o certificado
-# }
-DB_CONFIG = {
-    "host": "codd.unifesp.br",      # Mude para o IP do seu servidor, se necessário
-    "port": 3306,             # Porta padrão do MariaDB
-    "user": "alunobd",    # Seu usuário do banco
-    "password": "alunobd",  # Sua senha do banco
-    "database": "AnnaMedina",   # Nome do banco de dados
-     "ssl_ca": "/path/to/ca-cert.pem",  # Caminho para o certificado CA
-    "ssl_verify_cert": True  # Verificar o certificado
-}
-
+# Função para conectar ao MongoDB
 def get_db_connection():
     try:
-        conn = mariadb.connect(**DB_CONFIG)
-        return conn
-    except mariadb.Error as e:
+        client = MongoClient(MONGO_URI)
+        db = client[DATABASE_NAME]
+        collection = db[COLLECTION_NAME]
+        return collection
+    except Exception as e:
         st.error(f"Erro ao conectar ao banco de dados: {e}")
         return None
 
-st.title("Dados sobre desastres no Estado de São Paulo")
+st.title("Consulta ao Banco de Dados MongoDB Atlas")
 st.subheader("Projeto de Banco de Dados 2024/2")
-st.write("É necessário estar conectado à internet da unifesp para acessar o banco de dados.")
+st.write("Este aplicativo permite consultar dados de um banco de dados MongoDB Atlas.")
 
-# Área para digitar a consulta SQL
-query = st.text_area("Digite sua consulta SQL", height=150)
+# Área para digitar a consulta (filtro) no formato JSON
+query = st.text_area("Digite sua consulta (filtro) no formato JSON", height=100, value='{}')
 
-if st.button("Executar Comando SQL"):
+if st.button("Executar Consulta"):
     try:
-        conn = get_db_connection()
-        if conn is None:
+        collection = get_db_connection()
+        if collection is None:
             raise Exception("Falha na conexão com o banco de dados.")
-        cursor = conn.cursor(dictionary=True)
-        cursor.execute(query)
         
-        # Se for uma consulta SELECT, exibe os resultados
-        if query.strip().lower().startswith("select"):
-            results = cursor.fetchall()
-            if results:
-                # Converte os resultados em uma lista de dicionários
-                data = [dict(row) for row in results]
-                st.write("### Resultados:")
-                st.dataframe(data)
-            else:
-                st.info("Nenhum resultado para exibir.")
+        # Converte a consulta de string JSON para um dicionário Python
+        query_dict = eval(query)
+        
+        # Executa a consulta no MongoDB
+        results = list(collection.find(query_dict))
+        
+        if results:
+            st.write("### Resultados:")
+            st.write(results)  # Exibe os resultados brutos
         else:
-            conn.commit()
-            if query.strip().lower().startswith("insert"):
-                st.success("Dados inseridos com sucesso!")
-            elif query.strip().lower().startswith("update"):
-                st.success("Dados atualizados com sucesso!")
-            elif query.strip().lower().startswith("delete"):
-                st.success("Dados deletados com sucesso!")
-            elif query.strip().lower().startswith("create"):
-                st.success("Tabela criada com sucesso!")
-            else:
-                st.success("Consulta executada com sucesso!")
-        conn.close()
+            st.info("Nenhum resultado para exibir.")
     except Exception as e:
         st.error(f"Ocorreu um erro: {e}")
