@@ -4,12 +4,21 @@ import os
 
 DATABASE = "database.db"
 
+# DB_CONFIG = {
+#     "host": "sql.freedb.tech",      # Mude para o IP do seu servidor, se necessário
+#     "port": 3306,             # Porta padrão do MariaDB
+#     "user": "freedb_tassin",    # Seu usuário do banco
+#     "password": "CY$$E%wCDNv7PS#",  # Sua senha do banco
+#     "database": "freedb_tassocaneladefogo",   # Nome do banco de dados
+#      "ssl_ca": "/path/to/ca-cert.pem",  # Caminho para o certificado CA
+#     "ssl_verify_cert": True  # Verificar o certificado
+# }
 DB_CONFIG = {
-    "host": "sql.freedb.tech",      # Mude para o IP do seu servidor, se necessário
+    "host": "codd.unifesp.br",      # Mude para o IP do seu servidor, se necessário
     "port": 3306,             # Porta padrão do MariaDB
-    "user": "freedb_tassin",    # Seu usuário do banco
-    "password": "CY$$E%wCDNv7PS#",  # Sua senha do banco
-    "database": "freedb_tassocaneladefogo",   # Nome do banco de dados
+    "user": "alunobd",    # Seu usuário do banco
+    "password": "alunobd",  # Sua senha do banco
+    "database": "AnnaMedina",   # Nome do banco de dados
      "ssl_ca": "/path/to/ca-cert.pem",  # Caminho para o certificado CA
     "ssl_verify_cert": True  # Verificar o certificado
 }
