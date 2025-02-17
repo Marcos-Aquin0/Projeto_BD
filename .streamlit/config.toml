@@ -1,0 +1,9 @@
+[server]
+address = "0.0.0.0"  # Permite conexões de qualquer IP
+port = 8501
+enableCORS = true
+enableXsrfProtection = false
+
+[browser]
+serverAddress = "localhost"  # Para acesso local
+gatherUsageStats = false
