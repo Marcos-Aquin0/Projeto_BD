@@ -1,11 +1,16 @@
 import streamlit as st
 import psycopg2
 import pandas as pd
-from dotenv import load_dotenv
+
 import os
 
 # Carrega as variáveis de ambiente do arquivo .env
-load_dotenv()
+
+DB_HOST = st.secrets["postgres"]["DB_HOST"]
+DB_NAME = st.secrets["postgres"]["DB_NAME"]
+DB_USER = st.secrets["postgres"]["DB_USER"]
+DB_PASS = st.secrets["postgres"]["DB_PASS"]
+DB_PORT = st.secrets["postgres"]["DB_PORT"]
 
 # Configuração da conexão com Supabase PostgreSQL
 DB_CONFIG = {
