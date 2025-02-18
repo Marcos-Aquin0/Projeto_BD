@@ -2,19 +2,23 @@ import streamlit as st
 import psycopg2
 import pandas as pd
 
-# Configuração da conexão com Supabase PostgreSQL usando st.secrets
-DB_CONFIG = {
-    "host": st.secrets["postgres"]["DB_HOST"],
-    "dbname": st.secrets["postgres"]["DB_NAME"],
-    "user": st.secrets["postgres"]["DB_USER"],
-    "password": st.secrets["postgres"]["DB_PASS"],
-    "port": st.secrets["postgres"]["DB_PORT"]
-}
+# Configuração da conexão com Supabase PostgreSQL
+DB_HOST = "aws-0-sa-east-1.pooler.supabase.com"  # Pegue no painel do Supabase
+DB_NAME = "postgres"
+DB_USER = "postgres.omadaxjkaslyxfdmiumo"
+DB_PASS = "#FQPxrjAJS5wh9Q5"
+DB_PORT = "6543"
 
 def get_db_connection():
     """ Conecta ao banco PostgreSQL no Supabase """
     try:
-        conn = psycopg2.connect(**DB_CONFIG)
+        conn = psycopg2.connect(
+            dbname=DB_NAME,
+            user=DB_USER,
+            password=DB_PASS,
+            host=DB_HOST,
+            port=DB_PORT
+        )
         return conn
     except Exception as e:
         st.error(f"Erro ao conectar ao banco de dados: {e}")
