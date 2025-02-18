@@ -2,23 +2,13 @@ import streamlit as st
 import psycopg2
 import pandas as pd
 
-import os
-
-# Carrega as variáveis de ambiente do arquivo .env
-
-DB_HOST = st.secrets["postgres"]["DB_HOST"]
-DB_NAME = st.secrets["postgres"]["DB_NAME"]
-DB_USER = st.secrets["postgres"]["DB_USER"]
-DB_PASS = st.secrets["postgres"]["DB_PASS"]
-DB_PORT = st.secrets["postgres"]["DB_PORT"]
-
-# Configuração da conexão com Supabase PostgreSQL
+# Configuração da conexão com Supabase PostgreSQL usando st.secrets
 DB_CONFIG = {
-    "host": os.getenv("DB_HOST"),
-    "dbname": os.getenv("DB_NAME"),
-    "user": os.getenv("DB_USER"),
-    "password": os.getenv("DB_PASS"),
-    "port": os.getenv("DB_PORT")
+    "host": st.secrets["postgres"]["DB_HOST"],
+    "dbname": st.secrets["postgres"]["DB_NAME"],
+    "user": st.secrets["postgres"]["DB_USER"],
+    "password": st.secrets["postgres"]["DB_PASS"],
+    "port": st.secrets["postgres"]["DB_PORT"]
 }
 
 def get_db_connection():
@@ -30,7 +20,7 @@ def get_db_connection():
         st.error(f"Erro ao conectar ao banco de dados: {e}")
         return None
 
-st.title("Consulta ao Banco de Dados MongoDB Atlas")
+st.title("Desastres no Estado de São Paulo")
 st.subheader("Projeto de Banco de Dados 2024/2")
 st.write("Este aplicativo permite consultar dados de um banco de dados PostgreSQL Supabase usando comandos SQL.")
 st.subheader("Digite seu comando SQL abaixo:")
