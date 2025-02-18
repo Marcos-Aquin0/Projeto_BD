@@ -1,27 +1,36 @@
-# Instalando Streamlit com Conda
+# Instalando Dependências com Conda
 
-Para instalar o Streamlit usando Conda, siga estes passos:
-
-1. **Crie um novo ambiente Conda (opcional, mas recomendado):**
+1. **Crie e ative um novo ambiente conda:**
     ```sh
     conda create --name myenv python=3.8
     conda activate myenv
     ```
 
-2. **Instale o Streamlit:**
+2. **Instale todas as dependências usando conda:**
     ```sh
     conda install -c conda-forge streamlit
+    conda install -c conda-forge psycopg2
+    conda install -c conda-forge pandas
     ```
 
-3. **Verifique a instalação:**
+3. **Verifique as instalações:**
+    ```sh
+    python -c "import streamlit; import psycopg2; import pandas"
+    ```
+
+4. **Execute o Streamlit:**
     ```sh
     streamlit hello
     ```
 
-Isso abrirá uma nova aba no seu navegador web padrão com o aplicativo hello world do Streamlit.
+Se ainda houver problemas com psycopg2, tente:
+```sh
+conda install -c anaconda psycopg2
+```
 
-4. **Instale o MYSQL:**
-    ```sh
-    conda install mysql-connector-python
-    ```
+Ou como última alternativa:
+```sh
+conda install -c conda-forge postgresql
+pip install psycopg2-binary
+```
 

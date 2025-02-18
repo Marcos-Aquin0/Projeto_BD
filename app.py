@@ -1,45 +1,53 @@
 import streamlit as st
-from pymongo import MongoClient
+import psycopg2
+import pandas as pd
 
-# Configurações do MongoDB Atlas
-MONGO_URI = "mongodb+srv://marcosaquinoic:gGtPTFngmkeBtOKm@tassinbd.bi0zn.mongodb.net/?retryWrites=true&w=majority&appName=TassinBD"  # Substitua pela sua string de conexão
-DATABASE_NAME = "TassinBD"  # Substitua pelo nome do banco de dados
-COLLECTION_NAME = "projetobd"  # Substitua pelo nome da coleção
+# Configuração da conexão com Supabase PostgreSQL
+DB_HOST = "aws-0-sa-east-1.pooler.supabase.com"  # Pegue no painel do Supabase
+DB_NAME = "postgres"
+DB_USER = "postgres.omadaxjkaslyxfdmiumo"
+DB_PASS = "#FQPxrjAJS5wh9Q5"
+DB_PORT = "6543"
 
-# Função para conectar ao MongoDB
 def get_db_connection():
+    """ Conecta ao banco PostgreSQL no Supabase """
     try:
-        client = MongoClient(MONGO_URI)
-        db = client[DATABASE_NAME]
-        collection = db[COLLECTION_NAME]
-        return collection
+        conn = psycopg2.connect(
+            dbname=DB_NAME,
+            user=DB_USER,
+            password=DB_PASS,
+            host=DB_HOST,
+            port=DB_PORT
+        )
+        return conn
     except Exception as e:
         st.error(f"Erro ao conectar ao banco de dados: {e}")
         return None
 
-st.title("Consulta ao Banco de Dados MongoDB Atlas")
-st.subheader("Projeto de Banco de Dados 2024/2")
-st.write("Este aplicativo permite consultar dados de um banco de dados MongoDB Atlas.")
+st.title("Consultas SQL no PostgreSQL (Supabase)")
+st.subheader("Digite sua consulta SQL abaixo:")
 
-# Área para digitar a consulta (filtro) no formato JSON
-query = st.text_area("Digite sua consulta (filtro) no formato JSON", height=100, value='{}')
+sql_query = st.text_area("Consulta SQL", height=150)
 
 if st.button("Executar Consulta"):
-    try:
-        collection = get_db_connection()
-        if collection is None:
-            raise Exception("Falha na conexão com o banco de dados.")
-        
-        # Converte a consulta de string JSON para um dicionário Python
-        query_dict = eval(query)
-        
-        # Executa a consulta no MongoDB
-        results = list(collection.find(query_dict))
-        
-        if results:
-            st.write("### Resultados:")
-            st.write(results)  # Exibe os resultados brutos
-        else:
-            st.info("Nenhum resultado para exibir.")
-    except Exception as e:
-        st.error(f"Ocorreu um erro: {e}")
+    conn = get_db_connection()
+    if conn:
+        try:
+            cur = conn.cursor()
+            cur.execute(sql_query)
+            
+            if sql_query.strip().lower().startswith(("select", "with")):
+                # Buscar os resultados e exibir como tabela
+                data = cur.fetchall()
+                columns = [desc[0] for desc in cur.description]
+                df = pd.DataFrame(data, columns=columns)
+                st.dataframe(df)
+            else:
+                # Para comandos CREATE, INSERT, UPDATE, DELETE
+                conn.commit()
+                st.success("Consulta executada com sucesso!")
+            
+            cur.close()
+            conn.close()
+        except Exception as e:
+            st.error(f"Erro ao executar a consulta: {e}")
